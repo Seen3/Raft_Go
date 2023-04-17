@@ -1,0 +1,13 @@
+=== RUN   Test1
+11:16:31.052259 [0] listening at [::]:34721
+11:16:31.052567 [1] listening at [::]:40685
+11:16:31.052790 [2] listening at [::]:33653
+11:16:31.052980 [3] listening at [::]:33945
+11:16:31.053136 [4] listening at [::]:43137
+11:16:31.058581 AT NODE 0: Election timer started: 4.94s, with term=0
+11:16:31.058648 AT NODE 3: Election timer started: 5.318s, with term=0
+11:16:31.058670 AT NODE 2: Election timer started: 4.201s, with term=0
+11:16:31.058717 AT NODE 1: Election timer started: 3.337s, with term=0
+11:16:31.058738 AT NODE 4: Election timer started: 4.838s, with term=0
+signal: interrupt
+FAIL	RaftLogReplication	5.599s
