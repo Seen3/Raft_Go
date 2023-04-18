@@ -179,6 +179,7 @@ func (this *RaftNode) ReceiveClientCommand(command interface{}) bool {
 
 	this.write_log("ReceiveClientCommand received by %s: %v", this.state, command)
 	if this.state == "Leader" {
+		//Here is the part responsible for writing to logs
 		this.log = append(this.log, LogEntry{Command: command, Term: this.currentTerm})
 		this.write_log("Log=%v", this.log)
 		return true
