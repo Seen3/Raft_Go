@@ -58,6 +58,7 @@ func (this *RaftNode) broadcastHeartbeats() {
 			prevLogIndex := currentPeer_nextIndex - 1
 			prevLogTerm := -1
 			if prevLogIndex >= 0 {
+				// this.write_log("prevLogIndex is %d and size of log is %d for peer id %d and their current next index %d", prevLogIndex, len(this.log), peerId, currentPeer_nextIndex)
 				prevLogTerm = this.log[prevLogIndex].Term
 			}
 			entries := this.log[currentPeer_nextIndex:] // Which entries on the leader are not there on peer?
@@ -100,15 +101,20 @@ func (this *RaftNode) broadcastHeartbeats() {
 
 				if this.state == "Leader" && termWhenHeartbeatSent == reply.Term {
 					if reply.Success {
-
 						// There's changes you need to make here.
 						// this.nextIndex for the received PEER (this.nextIndex[peerId]) needs to be updated.
 						// So does this.matchIndex[peerId].
 						// IMPLEMENT THE UPDATE LOGIC FOR THIS.
 						//-------------------------------------------------------------------------------------------/
-						this.nextIndex[peerId]=currentPeer_nextIndex+len(entries)
-						this.matchIndex[peerId]=this.nextIndex[peerId]-1
+						// TODO
 						//-------------------------------------------------------------------------------------------/
+						this.nextIndex[peerId] += len(entries)
+						// this.matchIndex[peerId] = this.nextIndex[peerId] - 1
+						this.matchIndex[peerId] = (this.nextIndex[peerId] - 1) - len(entries)
+						if this.matchIndex[peerId] < this.commitIndex {
+							this.matchIndex[peerId] = this.commitIndex
+						}
+						// this.matchIndex[peerId] = this.commitIndex
 
 						if (aeType == "Heartbeat" && LogHeartbeatMessages) || aeType == "AppendEntries" {
 							this.write_log("%s reply from NODE %d success: nextIndex := %v, matchIndex := %v", aeType, peerId, this.nextIndex, this.matchIndex)
@@ -116,7 +122,7 @@ func (this *RaftNode) broadcastHeartbeats() {
 						oldCommitIndex := this.commitIndex
 
 						// AppendEntries success on majority, now commit on leader (IF NOT HEARTBEAT)
-						
+
 						// You must update commitIndex in a specific way somewhere in this loop;
 						// Figure out how and where; HINT: look for a majority of matchCounts.
 
@@ -126,12 +132,12 @@ func (this *RaftNode) broadcastHeartbeats() {
 								matchCount := 1 // Leader itself
 
 								for _, peerId := range this.peersIds {
-									if this.matchIndex[peerId]>=i && this.log[i].Term==this.currentTerm{ // TODO  // When should you update matchCount?
+									if this.matchIndex[peerId] >= i { // TODO  // When should you update matchCount?
 										matchCount++
 									}
 								}
 
-								if matchCount>len(this.peersIds)/2 && this.log[this.commitIndex].Term==this.currentTerm{ // TODO  // When should you update commitIndex to i?
+								if matchCount > (len(this.peersIds)+1)/2 { // TODO  // When should you update commitIndex to i?
 									this.commitIndex = i
 								}
 							}
@@ -151,9 +157,9 @@ func (this *RaftNode) broadcastHeartbeats() {
 						// this.nextIndex for the received PEER (this.nextIndex[peerId]) needs to be updated.
 
 						//-------------------------------------------------------------------------------------------/
-						this.nextIndex[peerId]=this.nextIndex[peerId]-1
+						// TODO
 						//-------------------------------------------------------------------------------------------/
-
+						this.nextIndex[peerId] = currentPeer_nextIndex - len(entries)
 						if (aeType == "Heartbeat" && LogHeartbeatMessages) || aeType == "AppendEntries" {
 							this.write_log("%s reply from NODE %d was failure; Hence, decrementing its nextIndex", aeType, peerId)
 						}

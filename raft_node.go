@@ -100,7 +100,7 @@ func (this *RaftNode) applyCommitedLogEntries() {
 	for{	
 	//fmt.Println(len(this.notifyToApplyCommit),this.notifyToApplyCommit)
 	for range this.notifyToApplyCommit {
-		fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+		//mt.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 		this.mu.Lock()
 
 		var entriesToApply []LogEntry
