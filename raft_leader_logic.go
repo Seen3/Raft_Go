@@ -106,8 +106,6 @@ func (this *RaftNode) broadcastHeartbeats() {
 						// So does this.matchIndex[peerId].
 						// IMPLEMENT THE UPDATE LOGIC FOR THIS.
 						//-------------------------------------------------------------------------------------------/
-						// TODO
-						//-------------------------------------------------------------------------------------------/
 						this.nextIndex[peerId] += len(entries)
 						// this.matchIndex[peerId] = this.nextIndex[peerId] - 1
 						this.matchIndex[peerId] = (this.nextIndex[peerId] - 1) - len(entries)
@@ -121,6 +119,8 @@ func (this *RaftNode) broadcastHeartbeats() {
 						}
 						oldCommitIndex := this.commitIndex
 
+						//-------------------------------------------------------------------------------------------/
+						
 						// AppendEntries success on majority, now commit on leader (IF NOT HEARTBEAT)
 
 						// You must update commitIndex in a specific way somewhere in this loop;
@@ -151,7 +151,7 @@ func (this *RaftNode) broadcastHeartbeats() {
 							this.notifyToApplyCommit <- 1
 						}
 
-					} else {
+						} else {
 
 						// There's changes you need to make here.
 						// this.nextIndex for the received PEER (this.nextIndex[peerId]) needs to be updated.
